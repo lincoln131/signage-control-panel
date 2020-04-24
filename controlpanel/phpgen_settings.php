@@ -60,6 +60,7 @@ function GetPageInfos()
     $result = array();
     $result[] = array('caption' => 'Edit Pay Attention Info', 'short_caption' => 'Pay Attention In City Traffic', 'filename' => 'payattention.php', 'name' => 'dbo.payattention', 'group_name' => 'Default', 'add_separator' => false, 'description' => '');
     $result[] = array('caption' => 'Edit WC Schedule', 'short_caption' => 'Watch Commander Scedule', 'filename' => 'wc_schedule.php', 'name' => 'dbo.wc_schedule', 'group_name' => 'Default', 'add_separator' => false, 'description' => '');
+    $result[] = array('caption' => 'Birthdays', 'short_caption' => 'Birthdays', 'filename' => 'birthdays.php', 'name' => 'dbo.birthdays', 'group_name' => 'Default', 'add_separator' => false, 'description' => '');
     return $result;
 }
 

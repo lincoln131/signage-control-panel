@@ -31,31 +31,27 @@
     
     
     
-    class dbo_payattentionPage extends Page
+    class dbo_birthdaysPage extends Page
     {
         protected function DoBeforeCreate()
         {
-            $this->SetTitle('Pay Attention In City Traffic');
-            $this->SetMenuLabel('Edit Pay Attention Info');
+            $this->SetTitle('Birthdays');
+            $this->SetMenuLabel('Birthdays');
             $this->SetHeader(GetPagesHeader());
             $this->SetFooter(GetPagesFooter());
     
             $this->dataset = new TableDataset(
                 SqlSrvConnectionFactory::getInstance(),
                 GetConnectionOptions(),
-                '[dbo].[payattention]');
+                '[dbo].[birthdays]');
             $this->dataset->addFields(
                 array(
                     new IntegerField('id', true, true, true),
-                    new StringField('location1', true),
-                    new StringField('location2', true),
-                    new StringField('task1', true),
-                    new StringField('task2', true),
-                    new StringField('task3', true),
-                    new StringField('task4', true),
-                    new DateField('lastupdate', true),
-                    new IntegerField('year'),
-                    new IntegerField('month')
+                    new IntegerField('year', true),
+                    new IntegerField('month', true),
+                    new IntegerField('day', true),
+                    new StringField('officer', true),
+                    new BlobField('picture', true)
                 )
             );
         }
@@ -89,15 +85,11 @@
         {
             return array(
                 new FilterColumn($this->dataset, 'id', 'id', 'Id'),
-                new FilterColumn($this->dataset, 'location1', 'location1', 'Location1'),
-                new FilterColumn($this->dataset, 'location2', 'location2', 'Location2'),
-                new FilterColumn($this->dataset, 'task1', 'task1', 'Task1'),
-                new FilterColumn($this->dataset, 'task2', 'task2', 'Task2'),
-                new FilterColumn($this->dataset, 'task3', 'task3', 'Task3'),
-                new FilterColumn($this->dataset, 'task4', 'task4', 'Task4'),
-                new FilterColumn($this->dataset, 'lastupdate', 'lastupdate', 'Lastupdate'),
                 new FilterColumn($this->dataset, 'year', 'year', 'Year'),
-                new FilterColumn($this->dataset, 'month', 'month', 'Month')
+                new FilterColumn($this->dataset, 'month', 'month', 'Month'),
+                new FilterColumn($this->dataset, 'day', 'day', 'Day'),
+                new FilterColumn($this->dataset, 'officer', 'officer', 'Officer'),
+                new FilterColumn($this->dataset, 'picture', 'picture', 'Picture')
             );
         }
     
@@ -105,21 +97,19 @@
         {
             $quickFilter
                 ->addColumn($columns['id'])
-                ->addColumn($columns['location1'])
-                ->addColumn($columns['location2'])
-                ->addColumn($columns['task1'])
-                ->addColumn($columns['task2'])
-                ->addColumn($columns['task3'])
-                ->addColumn($columns['task4'])
-                ->addColumn($columns['lastupdate'])
                 ->addColumn($columns['year'])
-                ->addColumn($columns['month']);
+                ->addColumn($columns['month'])
+                ->addColumn($columns['day'])
+                ->addColumn($columns['officer']);
         }
     
         protected function setupColumnFilter(ColumnFilter $columnFilter)
         {
             $columnFilter
-                ->setOptionsFor('lastupdate');
+                ->setOptionsFor('year')
+                ->setOptionsFor('month')
+                ->setOptionsFor('day')
+                ->setOptionsFor('officer');
         }
     
         protected function setupFilterBuilder(FilterBuilder $filterBuilder, FixedKeysArray $columns)
@@ -137,171 +127,6 @@
                     FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
                     FilterConditionOperator::IS_BETWEEN => $main_editor,
                     FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
-                    FilterConditionOperator::IS_BLANK => null,
-                    FilterConditionOperator::IS_NOT_BLANK => null
-                )
-            );
-            
-            $main_editor = new TextEdit('location1_edit');
-            
-            $filterBuilder->addColumn(
-                $columns['location1'],
-                array(
-                    FilterConditionOperator::EQUALS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_EQUAL => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_BETWEEN => $main_editor,
-                    FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
-                    FilterConditionOperator::CONTAINS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_CONTAIN => $main_editor,
-                    FilterConditionOperator::BEGINS_WITH => $main_editor,
-                    FilterConditionOperator::ENDS_WITH => $main_editor,
-                    FilterConditionOperator::IS_LIKE => $main_editor,
-                    FilterConditionOperator::IS_NOT_LIKE => $main_editor,
-                    FilterConditionOperator::IS_BLANK => null,
-                    FilterConditionOperator::IS_NOT_BLANK => null
-                )
-            );
-            
-            $main_editor = new TextEdit('location2_edit');
-            
-            $filterBuilder->addColumn(
-                $columns['location2'],
-                array(
-                    FilterConditionOperator::EQUALS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_EQUAL => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_BETWEEN => $main_editor,
-                    FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
-                    FilterConditionOperator::CONTAINS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_CONTAIN => $main_editor,
-                    FilterConditionOperator::BEGINS_WITH => $main_editor,
-                    FilterConditionOperator::ENDS_WITH => $main_editor,
-                    FilterConditionOperator::IS_LIKE => $main_editor,
-                    FilterConditionOperator::IS_NOT_LIKE => $main_editor,
-                    FilterConditionOperator::IS_BLANK => null,
-                    FilterConditionOperator::IS_NOT_BLANK => null
-                )
-            );
-            
-            $main_editor = new TextEdit('task1_edit');
-            
-            $filterBuilder->addColumn(
-                $columns['task1'],
-                array(
-                    FilterConditionOperator::EQUALS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_EQUAL => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_BETWEEN => $main_editor,
-                    FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
-                    FilterConditionOperator::CONTAINS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_CONTAIN => $main_editor,
-                    FilterConditionOperator::BEGINS_WITH => $main_editor,
-                    FilterConditionOperator::ENDS_WITH => $main_editor,
-                    FilterConditionOperator::IS_LIKE => $main_editor,
-                    FilterConditionOperator::IS_NOT_LIKE => $main_editor,
-                    FilterConditionOperator::IS_BLANK => null,
-                    FilterConditionOperator::IS_NOT_BLANK => null
-                )
-            );
-            
-            $main_editor = new TextEdit('task2_edit');
-            
-            $filterBuilder->addColumn(
-                $columns['task2'],
-                array(
-                    FilterConditionOperator::EQUALS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_EQUAL => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_BETWEEN => $main_editor,
-                    FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
-                    FilterConditionOperator::CONTAINS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_CONTAIN => $main_editor,
-                    FilterConditionOperator::BEGINS_WITH => $main_editor,
-                    FilterConditionOperator::ENDS_WITH => $main_editor,
-                    FilterConditionOperator::IS_LIKE => $main_editor,
-                    FilterConditionOperator::IS_NOT_LIKE => $main_editor,
-                    FilterConditionOperator::IS_BLANK => null,
-                    FilterConditionOperator::IS_NOT_BLANK => null
-                )
-            );
-            
-            $main_editor = new TextEdit('task3_edit');
-            
-            $filterBuilder->addColumn(
-                $columns['task3'],
-                array(
-                    FilterConditionOperator::EQUALS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_EQUAL => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_BETWEEN => $main_editor,
-                    FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
-                    FilterConditionOperator::CONTAINS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_CONTAIN => $main_editor,
-                    FilterConditionOperator::BEGINS_WITH => $main_editor,
-                    FilterConditionOperator::ENDS_WITH => $main_editor,
-                    FilterConditionOperator::IS_LIKE => $main_editor,
-                    FilterConditionOperator::IS_NOT_LIKE => $main_editor,
-                    FilterConditionOperator::IS_BLANK => null,
-                    FilterConditionOperator::IS_NOT_BLANK => null
-                )
-            );
-            
-            $main_editor = new TextEdit('task4_edit');
-            
-            $filterBuilder->addColumn(
-                $columns['task4'],
-                array(
-                    FilterConditionOperator::EQUALS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_EQUAL => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_BETWEEN => $main_editor,
-                    FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
-                    FilterConditionOperator::CONTAINS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_CONTAIN => $main_editor,
-                    FilterConditionOperator::BEGINS_WITH => $main_editor,
-                    FilterConditionOperator::ENDS_WITH => $main_editor,
-                    FilterConditionOperator::IS_LIKE => $main_editor,
-                    FilterConditionOperator::IS_NOT_LIKE => $main_editor,
-                    FilterConditionOperator::IS_BLANK => null,
-                    FilterConditionOperator::IS_NOT_BLANK => null
-                )
-            );
-            
-            $main_editor = new DateTimeEdit('lastupdate_edit', false, 'Y-m-d');
-            
-            $filterBuilder->addColumn(
-                $columns['lastupdate'],
-                array(
-                    FilterConditionOperator::EQUALS => $main_editor,
-                    FilterConditionOperator::DOES_NOT_EQUAL => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN => $main_editor,
-                    FilterConditionOperator::IS_GREATER_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN => $main_editor,
-                    FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
-                    FilterConditionOperator::IS_BETWEEN => $main_editor,
-                    FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
-                    FilterConditionOperator::DATE_EQUALS => $main_editor,
-                    FilterConditionOperator::DATE_DOES_NOT_EQUAL => $main_editor,
-                    FilterConditionOperator::TODAY => null,
                     FilterConditionOperator::IS_BLANK => null,
                     FilterConditionOperator::IS_NOT_BLANK => null
                 )
@@ -338,6 +163,48 @@
                     FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
                     FilterConditionOperator::IS_BETWEEN => $main_editor,
                     FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
+                    FilterConditionOperator::IS_BLANK => null,
+                    FilterConditionOperator::IS_NOT_BLANK => null
+                )
+            );
+            
+            $main_editor = new TextEdit('day_edit');
+            
+            $filterBuilder->addColumn(
+                $columns['day'],
+                array(
+                    FilterConditionOperator::EQUALS => $main_editor,
+                    FilterConditionOperator::DOES_NOT_EQUAL => $main_editor,
+                    FilterConditionOperator::IS_GREATER_THAN => $main_editor,
+                    FilterConditionOperator::IS_GREATER_THAN_OR_EQUAL_TO => $main_editor,
+                    FilterConditionOperator::IS_LESS_THAN => $main_editor,
+                    FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
+                    FilterConditionOperator::IS_BETWEEN => $main_editor,
+                    FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
+                    FilterConditionOperator::IS_BLANK => null,
+                    FilterConditionOperator::IS_NOT_BLANK => null
+                )
+            );
+            
+            $main_editor = new TextEdit('officer_edit');
+            
+            $filterBuilder->addColumn(
+                $columns['officer'],
+                array(
+                    FilterConditionOperator::EQUALS => $main_editor,
+                    FilterConditionOperator::DOES_NOT_EQUAL => $main_editor,
+                    FilterConditionOperator::IS_GREATER_THAN => $main_editor,
+                    FilterConditionOperator::IS_GREATER_THAN_OR_EQUAL_TO => $main_editor,
+                    FilterConditionOperator::IS_LESS_THAN => $main_editor,
+                    FilterConditionOperator::IS_LESS_THAN_OR_EQUAL_TO => $main_editor,
+                    FilterConditionOperator::IS_BETWEEN => $main_editor,
+                    FilterConditionOperator::IS_NOT_BETWEEN => $main_editor,
+                    FilterConditionOperator::CONTAINS => $main_editor,
+                    FilterConditionOperator::DOES_NOT_CONTAIN => $main_editor,
+                    FilterConditionOperator::BEGINS_WITH => $main_editor,
+                    FilterConditionOperator::ENDS_WITH => $main_editor,
+                    FilterConditionOperator::IS_LIKE => $main_editor,
+                    FilterConditionOperator::IS_NOT_LIKE => $main_editor,
                     FilterConditionOperator::IS_BLANK => null,
                     FilterConditionOperator::IS_NOT_BLANK => null
                 )
@@ -388,81 +255,10 @@
             // View column for id field
             //
             $column = new NumberViewColumn('id', 'id', 'Id', $this->dataset);
-            $column->SetOrderable(true);
+            $column->SetOrderable(false);
             $column->setNumberAfterDecimal(0);
             $column->setThousandsSeparator(',');
             $column->setDecimalSeparator('');
-            $column->setMinimalVisibility(ColumnVisibility::PHONE);
-            $column->SetDescription('');
-            $column->SetFixedWidth(null);
-            $grid->AddViewColumn($column);
-            
-            //
-            // View column for location1 field
-            //
-            $column = new TextViewColumn('location1', 'location1', 'Location1', $this->dataset);
-            $column->SetOrderable(false);
-            $column->setMinimalVisibility(ColumnVisibility::PHONE);
-            $column->SetDescription('');
-            $column->SetFixedWidth(null);
-            $grid->AddViewColumn($column);
-            
-            //
-            // View column for location2 field
-            //
-            $column = new TextViewColumn('location2', 'location2', 'Location2', $this->dataset);
-            $column->SetOrderable(false);
-            $column->setMinimalVisibility(ColumnVisibility::PHONE);
-            $column->SetDescription('');
-            $column->SetFixedWidth(null);
-            $grid->AddViewColumn($column);
-            
-            //
-            // View column for task1 field
-            //
-            $column = new TextViewColumn('task1', 'task1', 'Task1', $this->dataset);
-            $column->SetOrderable(false);
-            $column->setMinimalVisibility(ColumnVisibility::PHONE);
-            $column->SetDescription('');
-            $column->SetFixedWidth(null);
-            $grid->AddViewColumn($column);
-            
-            //
-            // View column for task2 field
-            //
-            $column = new TextViewColumn('task2', 'task2', 'Task2', $this->dataset);
-            $column->SetOrderable(false);
-            $column->setMinimalVisibility(ColumnVisibility::PHONE);
-            $column->SetDescription('');
-            $column->SetFixedWidth(null);
-            $grid->AddViewColumn($column);
-            
-            //
-            // View column for task3 field
-            //
-            $column = new TextViewColumn('task3', 'task3', 'Task3', $this->dataset);
-            $column->SetOrderable(false);
-            $column->setMinimalVisibility(ColumnVisibility::PHONE);
-            $column->SetDescription('');
-            $column->SetFixedWidth(null);
-            $grid->AddViewColumn($column);
-            
-            //
-            // View column for task4 field
-            //
-            $column = new TextViewColumn('task4', 'task4', 'Task4', $this->dataset);
-            $column->SetOrderable(false);
-            $column->setMinimalVisibility(ColumnVisibility::PHONE);
-            $column->SetDescription('');
-            $column->SetFixedWidth(null);
-            $grid->AddViewColumn($column);
-            
-            //
-            // View column for lastupdate field
-            //
-            $column = new DateTimeViewColumn('lastupdate', 'lastupdate', 'Lastupdate', $this->dataset);
-            $column->SetOrderable(true);
-            $column->SetDateTimeFormat('Y-m-d');
             $column->setMinimalVisibility(ColumnVisibility::PHONE);
             $column->SetDescription('');
             $column->SetFixedWidth(null);
@@ -489,6 +285,39 @@
             $column->setNumberAfterDecimal(0);
             $column->setThousandsSeparator(',');
             $column->setDecimalSeparator('');
+            $column->setMinimalVisibility(ColumnVisibility::PHONE);
+            $column->SetDescription('');
+            $column->SetFixedWidth(null);
+            $grid->AddViewColumn($column);
+            
+            //
+            // View column for day field
+            //
+            $column = new NumberViewColumn('day', 'day', 'Day', $this->dataset);
+            $column->SetOrderable(true);
+            $column->setNumberAfterDecimal(0);
+            $column->setThousandsSeparator(',');
+            $column->setDecimalSeparator('');
+            $column->setMinimalVisibility(ColumnVisibility::PHONE);
+            $column->SetDescription('');
+            $column->SetFixedWidth(null);
+            $grid->AddViewColumn($column);
+            
+            //
+            // View column for officer field
+            //
+            $column = new TextViewColumn('officer', 'officer', 'Officer', $this->dataset);
+            $column->SetOrderable(true);
+            $column->setMinimalVisibility(ColumnVisibility::PHONE);
+            $column->SetDescription('');
+            $column->SetFixedWidth(null);
+            $grid->AddViewColumn($column);
+            
+            //
+            // View column for picture field
+            //
+            $column = new DownloadDataColumn('picture', 'picture', 'Picture', $this->dataset);
+            $column->SetOrderable(false);
             $column->setMinimalVisibility(ColumnVisibility::PHONE);
             $column->SetDescription('');
             $column->SetFixedWidth(null);
@@ -498,56 +327,6 @@
         protected function AddSingleRecordViewColumns(Grid $grid)
         {
             //
-            // View column for location1 field
-            //
-            $column = new TextViewColumn('location1', 'location1', 'Location1', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddSingleRecordViewColumn($column);
-            
-            //
-            // View column for location2 field
-            //
-            $column = new TextViewColumn('location2', 'location2', 'Location2', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddSingleRecordViewColumn($column);
-            
-            //
-            // View column for task1 field
-            //
-            $column = new TextViewColumn('task1', 'task1', 'Task1', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddSingleRecordViewColumn($column);
-            
-            //
-            // View column for task2 field
-            //
-            $column = new TextViewColumn('task2', 'task2', 'Task2', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddSingleRecordViewColumn($column);
-            
-            //
-            // View column for task3 field
-            //
-            $column = new TextViewColumn('task3', 'task3', 'Task3', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddSingleRecordViewColumn($column);
-            
-            //
-            // View column for task4 field
-            //
-            $column = new TextViewColumn('task4', 'task4', 'Task4', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddSingleRecordViewColumn($column);
-            
-            //
-            // View column for lastupdate field
-            //
-            $column = new DateTimeViewColumn('lastupdate', 'lastupdate', 'Lastupdate', $this->dataset);
-            $column->SetOrderable(true);
-            $column->SetDateTimeFormat('Y-m-d');
-            $grid->AddSingleRecordViewColumn($column);
-            
-            //
             // View column for year field
             //
             $column = new NumberViewColumn('year', 'year', 'Year', $this->dataset);
@@ -566,86 +345,41 @@
             $column->setThousandsSeparator(',');
             $column->setDecimalSeparator('');
             $grid->AddSingleRecordViewColumn($column);
+            
+            //
+            // View column for day field
+            //
+            $column = new NumberViewColumn('day', 'day', 'Day', $this->dataset);
+            $column->SetOrderable(true);
+            $column->setNumberAfterDecimal(0);
+            $column->setThousandsSeparator(',');
+            $column->setDecimalSeparator('');
+            $grid->AddSingleRecordViewColumn($column);
+            
+            //
+            // View column for officer field
+            //
+            $column = new TextViewColumn('officer', 'officer', 'Officer', $this->dataset);
+            $column->SetOrderable(true);
+            $grid->AddSingleRecordViewColumn($column);
+            
+            //
+            // View column for picture field
+            //
+            $column = new DownloadDataColumn('picture', 'picture', 'Picture', $this->dataset);
+            $column->SetOrderable(false);
+            $grid->AddSingleRecordViewColumn($column);
         }
     
         protected function AddEditColumns(Grid $grid)
         {
             //
-            // Edit column for location1 field
-            //
-            $editor = new TextEdit('location1_edit');
-            $editColumn = new CustomEditColumn('Location1', 'location1', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddEditColumn($editColumn);
-            
-            //
-            // Edit column for location2 field
-            //
-            $editor = new TextEdit('location2_edit');
-            $editColumn = new CustomEditColumn('Location2', 'location2', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddEditColumn($editColumn);
-            
-            //
-            // Edit column for task1 field
-            //
-            $editor = new TextEdit('task1_edit');
-            $editColumn = new CustomEditColumn('Task1', 'task1', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddEditColumn($editColumn);
-            
-            //
-            // Edit column for task2 field
-            //
-            $editor = new TextEdit('task2_edit');
-            $editColumn = new CustomEditColumn('Task2', 'task2', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddEditColumn($editColumn);
-            
-            //
-            // Edit column for task3 field
-            //
-            $editor = new TextEdit('task3_edit');
-            $editColumn = new CustomEditColumn('Task3', 'task3', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddEditColumn($editColumn);
-            
-            //
-            // Edit column for task4 field
-            //
-            $editor = new TextEdit('task4_edit');
-            $editColumn = new CustomEditColumn('Task4', 'task4', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddEditColumn($editColumn);
-            
-            //
-            // Edit column for lastupdate field
-            //
-            $editor = new DateTimeEdit('lastupdate_edit', false, 'Y-m-d');
-            $editColumn = new CustomEditColumn('Lastupdate', 'lastupdate', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddEditColumn($editColumn);
-            
-            //
             // Edit column for year field
             //
             $editor = new TextEdit('year_edit');
             $editColumn = new CustomEditColumn('Year', 'year', $editor, $this->dataset);
-            $editColumn->SetAllowSetToNull(true);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
             $this->ApplyCommonColumnEditProperties($editColumn);
             $grid->AddEditColumn($editColumn);
             
@@ -654,7 +388,39 @@
             //
             $editor = new TextEdit('month_edit');
             $editColumn = new CustomEditColumn('Month', 'month', $editor, $this->dataset);
-            $editColumn->SetAllowSetToNull(true);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
+            $this->ApplyCommonColumnEditProperties($editColumn);
+            $grid->AddEditColumn($editColumn);
+            
+            //
+            // Edit column for day field
+            //
+            $editor = new TextEdit('day_edit');
+            $editColumn = new CustomEditColumn('Day', 'day', $editor, $this->dataset);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
+            $this->ApplyCommonColumnEditProperties($editColumn);
+            $grid->AddEditColumn($editColumn);
+            
+            //
+            // Edit column for officer field
+            //
+            $editor = new TextEdit('officer_edit');
+            $editColumn = new CustomEditColumn('Officer', 'officer', $editor, $this->dataset);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
+            $this->ApplyCommonColumnEditProperties($editColumn);
+            $grid->AddEditColumn($editColumn);
+            
+            //
+            // Edit column for picture field
+            //
+            $editor = new ImageUploader('picture_edit');
+            $editor->SetShowImage(false);
+            $editColumn = new FileUploadingColumn('Picture', 'picture', $editor, $this->dataset, false, false, 'dbo_birthdays_picture_handler_edit');
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
             $this->ApplyCommonColumnEditProperties($editColumn);
             $grid->AddEditColumn($editColumn);
         }
@@ -662,81 +428,12 @@
         protected function AddMultiEditColumns(Grid $grid)
         {
             //
-            // Edit column for location1 field
-            //
-            $editor = new TextEdit('location1_edit');
-            $editColumn = new CustomEditColumn('Location1', 'location1', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddMultiEditColumn($editColumn);
-            
-            //
-            // Edit column for location2 field
-            //
-            $editor = new TextEdit('location2_edit');
-            $editColumn = new CustomEditColumn('Location2', 'location2', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddMultiEditColumn($editColumn);
-            
-            //
-            // Edit column for task1 field
-            //
-            $editor = new TextEdit('task1_edit');
-            $editColumn = new CustomEditColumn('Task1', 'task1', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddMultiEditColumn($editColumn);
-            
-            //
-            // Edit column for task2 field
-            //
-            $editor = new TextEdit('task2_edit');
-            $editColumn = new CustomEditColumn('Task2', 'task2', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddMultiEditColumn($editColumn);
-            
-            //
-            // Edit column for task3 field
-            //
-            $editor = new TextEdit('task3_edit');
-            $editColumn = new CustomEditColumn('Task3', 'task3', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddMultiEditColumn($editColumn);
-            
-            //
-            // Edit column for task4 field
-            //
-            $editor = new TextEdit('task4_edit');
-            $editColumn = new CustomEditColumn('Task4', 'task4', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddMultiEditColumn($editColumn);
-            
-            //
-            // Edit column for lastupdate field
-            //
-            $editor = new DateTimeEdit('lastupdate_edit', false, 'Y-m-d');
-            $editColumn = new CustomEditColumn('Lastupdate', 'lastupdate', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddMultiEditColumn($editColumn);
-            
-            //
             // Edit column for year field
             //
             $editor = new TextEdit('year_edit');
             $editColumn = new CustomEditColumn('Year', 'year', $editor, $this->dataset);
-            $editColumn->SetAllowSetToNull(true);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
             $this->ApplyCommonColumnEditProperties($editColumn);
             $grid->AddMultiEditColumn($editColumn);
             
@@ -745,7 +442,39 @@
             //
             $editor = new TextEdit('month_edit');
             $editColumn = new CustomEditColumn('Month', 'month', $editor, $this->dataset);
-            $editColumn->SetAllowSetToNull(true);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
+            $this->ApplyCommonColumnEditProperties($editColumn);
+            $grid->AddMultiEditColumn($editColumn);
+            
+            //
+            // Edit column for day field
+            //
+            $editor = new TextEdit('day_edit');
+            $editColumn = new CustomEditColumn('Day', 'day', $editor, $this->dataset);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
+            $this->ApplyCommonColumnEditProperties($editColumn);
+            $grid->AddMultiEditColumn($editColumn);
+            
+            //
+            // Edit column for officer field
+            //
+            $editor = new TextEdit('officer_edit');
+            $editColumn = new CustomEditColumn('Officer', 'officer', $editor, $this->dataset);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
+            $this->ApplyCommonColumnEditProperties($editColumn);
+            $grid->AddMultiEditColumn($editColumn);
+            
+            //
+            // Edit column for picture field
+            //
+            $editor = new ImageUploader('picture_edit');
+            $editor->SetShowImage(false);
+            $editColumn = new FileUploadingColumn('Picture', 'picture', $editor, $this->dataset, false, false, 'dbo_birthdays_picture_handler_multi_edit');
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
             $this->ApplyCommonColumnEditProperties($editColumn);
             $grid->AddMultiEditColumn($editColumn);
         }
@@ -763,81 +492,12 @@
             $grid->AddInsertColumn($editColumn);
             
             //
-            // Edit column for location1 field
-            //
-            $editor = new TextEdit('location1_edit');
-            $editColumn = new CustomEditColumn('Location1', 'location1', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddInsertColumn($editColumn);
-            
-            //
-            // Edit column for location2 field
-            //
-            $editor = new TextEdit('location2_edit');
-            $editColumn = new CustomEditColumn('Location2', 'location2', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddInsertColumn($editColumn);
-            
-            //
-            // Edit column for task1 field
-            //
-            $editor = new TextEdit('task1_edit');
-            $editColumn = new CustomEditColumn('Task1', 'task1', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddInsertColumn($editColumn);
-            
-            //
-            // Edit column for task2 field
-            //
-            $editor = new TextEdit('task2_edit');
-            $editColumn = new CustomEditColumn('Task2', 'task2', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddInsertColumn($editColumn);
-            
-            //
-            // Edit column for task3 field
-            //
-            $editor = new TextEdit('task3_edit');
-            $editColumn = new CustomEditColumn('Task3', 'task3', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddInsertColumn($editColumn);
-            
-            //
-            // Edit column for task4 field
-            //
-            $editor = new TextEdit('task4_edit');
-            $editColumn = new CustomEditColumn('Task4', 'task4', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddInsertColumn($editColumn);
-            
-            //
-            // Edit column for lastupdate field
-            //
-            $editor = new DateTimeEdit('lastupdate_edit', false, 'Y-m-d');
-            $editColumn = new CustomEditColumn('Lastupdate', 'lastupdate', $editor, $this->dataset);
-            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
-            $editor->GetValidatorCollection()->AddValidator($validator);
-            $this->ApplyCommonColumnEditProperties($editColumn);
-            $grid->AddInsertColumn($editColumn);
-            
-            //
             // Edit column for year field
             //
             $editor = new TextEdit('year_edit');
             $editColumn = new CustomEditColumn('Year', 'year', $editor, $this->dataset);
-            $editColumn->SetAllowSetToNull(true);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
             $this->ApplyCommonColumnEditProperties($editColumn);
             $grid->AddInsertColumn($editColumn);
             
@@ -846,7 +506,39 @@
             //
             $editor = new TextEdit('month_edit');
             $editColumn = new CustomEditColumn('Month', 'month', $editor, $this->dataset);
-            $editColumn->SetAllowSetToNull(true);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
+            $this->ApplyCommonColumnEditProperties($editColumn);
+            $grid->AddInsertColumn($editColumn);
+            
+            //
+            // Edit column for day field
+            //
+            $editor = new TextEdit('day_edit');
+            $editColumn = new CustomEditColumn('Day', 'day', $editor, $this->dataset);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
+            $this->ApplyCommonColumnEditProperties($editColumn);
+            $grid->AddInsertColumn($editColumn);
+            
+            //
+            // Edit column for officer field
+            //
+            $editor = new TextEdit('officer_edit');
+            $editColumn = new CustomEditColumn('Officer', 'officer', $editor, $this->dataset);
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
+            $this->ApplyCommonColumnEditProperties($editColumn);
+            $grid->AddInsertColumn($editColumn);
+            
+            //
+            // Edit column for picture field
+            //
+            $editor = new ImageUploader('picture_edit');
+            $editor->SetShowImage(false);
+            $editColumn = new FileUploadingColumn('Picture', 'picture', $editor, $this->dataset, false, false, 'dbo_birthdays_picture_handler_insert');
+            $validator = new RequiredValidator(StringUtils::Format($this->GetLocalizerCaptions()->GetMessageString('RequiredValidationMessage'), $editColumn->GetCaption()));
+            $editor->GetValidatorCollection()->AddValidator($validator);
             $this->ApplyCommonColumnEditProperties($editColumn);
             $grid->AddInsertColumn($editColumn);
             $grid->SetShowAddButton(true && $this->GetSecurityInfo()->HasAddGrant());
@@ -863,60 +555,10 @@
             // View column for id field
             //
             $column = new NumberViewColumn('id', 'id', 'Id', $this->dataset);
-            $column->SetOrderable(true);
+            $column->SetOrderable(false);
             $column->setNumberAfterDecimal(0);
             $column->setThousandsSeparator(',');
             $column->setDecimalSeparator('');
-            $grid->AddPrintColumn($column);
-            
-            //
-            // View column for location1 field
-            //
-            $column = new TextViewColumn('location1', 'location1', 'Location1', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddPrintColumn($column);
-            
-            //
-            // View column for location2 field
-            //
-            $column = new TextViewColumn('location2', 'location2', 'Location2', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddPrintColumn($column);
-            
-            //
-            // View column for task1 field
-            //
-            $column = new TextViewColumn('task1', 'task1', 'Task1', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddPrintColumn($column);
-            
-            //
-            // View column for task2 field
-            //
-            $column = new TextViewColumn('task2', 'task2', 'Task2', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddPrintColumn($column);
-            
-            //
-            // View column for task3 field
-            //
-            $column = new TextViewColumn('task3', 'task3', 'Task3', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddPrintColumn($column);
-            
-            //
-            // View column for task4 field
-            //
-            $column = new TextViewColumn('task4', 'task4', 'Task4', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddPrintColumn($column);
-            
-            //
-            // View column for lastupdate field
-            //
-            $column = new DateTimeViewColumn('lastupdate', 'lastupdate', 'Lastupdate', $this->dataset);
-            $column->SetOrderable(true);
-            $column->SetDateTimeFormat('Y-m-d');
             $grid->AddPrintColumn($column);
             
             //
@@ -937,6 +579,30 @@
             $column->setNumberAfterDecimal(0);
             $column->setThousandsSeparator(',');
             $column->setDecimalSeparator('');
+            $grid->AddPrintColumn($column);
+            
+            //
+            // View column for day field
+            //
+            $column = new NumberViewColumn('day', 'day', 'Day', $this->dataset);
+            $column->SetOrderable(true);
+            $column->setNumberAfterDecimal(0);
+            $column->setThousandsSeparator(',');
+            $column->setDecimalSeparator('');
+            $grid->AddPrintColumn($column);
+            
+            //
+            // View column for officer field
+            //
+            $column = new TextViewColumn('officer', 'officer', 'Officer', $this->dataset);
+            $column->SetOrderable(true);
+            $grid->AddPrintColumn($column);
+            
+            //
+            // View column for picture field
+            //
+            $column = new DownloadDataColumn('picture', 'picture', 'Picture', $this->dataset);
+            $column->SetOrderable(false);
             $grid->AddPrintColumn($column);
         }
     
@@ -946,60 +612,10 @@
             // View column for id field
             //
             $column = new NumberViewColumn('id', 'id', 'Id', $this->dataset);
-            $column->SetOrderable(true);
+            $column->SetOrderable(false);
             $column->setNumberAfterDecimal(0);
             $column->setThousandsSeparator(',');
             $column->setDecimalSeparator('');
-            $grid->AddExportColumn($column);
-            
-            //
-            // View column for location1 field
-            //
-            $column = new TextViewColumn('location1', 'location1', 'Location1', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddExportColumn($column);
-            
-            //
-            // View column for location2 field
-            //
-            $column = new TextViewColumn('location2', 'location2', 'Location2', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddExportColumn($column);
-            
-            //
-            // View column for task1 field
-            //
-            $column = new TextViewColumn('task1', 'task1', 'Task1', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddExportColumn($column);
-            
-            //
-            // View column for task2 field
-            //
-            $column = new TextViewColumn('task2', 'task2', 'Task2', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddExportColumn($column);
-            
-            //
-            // View column for task3 field
-            //
-            $column = new TextViewColumn('task3', 'task3', 'Task3', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddExportColumn($column);
-            
-            //
-            // View column for task4 field
-            //
-            $column = new TextViewColumn('task4', 'task4', 'Task4', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddExportColumn($column);
-            
-            //
-            // View column for lastupdate field
-            //
-            $column = new DateTimeViewColumn('lastupdate', 'lastupdate', 'Lastupdate', $this->dataset);
-            $column->SetOrderable(true);
-            $column->SetDateTimeFormat('Y-m-d');
             $grid->AddExportColumn($column);
             
             //
@@ -1020,6 +636,30 @@
             $column->setNumberAfterDecimal(0);
             $column->setThousandsSeparator(',');
             $column->setDecimalSeparator('');
+            $grid->AddExportColumn($column);
+            
+            //
+            // View column for day field
+            //
+            $column = new NumberViewColumn('day', 'day', 'Day', $this->dataset);
+            $column->SetOrderable(true);
+            $column->setNumberAfterDecimal(0);
+            $column->setThousandsSeparator(',');
+            $column->setDecimalSeparator('');
+            $grid->AddExportColumn($column);
+            
+            //
+            // View column for officer field
+            //
+            $column = new TextViewColumn('officer', 'officer', 'Officer', $this->dataset);
+            $column->SetOrderable(true);
+            $grid->AddExportColumn($column);
+            
+            //
+            // View column for picture field
+            //
+            $column = new DownloadDataColumn('picture', 'picture', 'Picture', $this->dataset);
+            $column->SetOrderable(false);
             $grid->AddExportColumn($column);
         }
     
@@ -1029,60 +669,10 @@
             // View column for id field
             //
             $column = new NumberViewColumn('id', 'id', 'Id', $this->dataset);
-            $column->SetOrderable(true);
+            $column->SetOrderable(false);
             $column->setNumberAfterDecimal(0);
             $column->setThousandsSeparator(',');
             $column->setDecimalSeparator('');
-            $grid->AddCompareColumn($column);
-            
-            //
-            // View column for location1 field
-            //
-            $column = new TextViewColumn('location1', 'location1', 'Location1', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddCompareColumn($column);
-            
-            //
-            // View column for location2 field
-            //
-            $column = new TextViewColumn('location2', 'location2', 'Location2', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddCompareColumn($column);
-            
-            //
-            // View column for task1 field
-            //
-            $column = new TextViewColumn('task1', 'task1', 'Task1', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddCompareColumn($column);
-            
-            //
-            // View column for task2 field
-            //
-            $column = new TextViewColumn('task2', 'task2', 'Task2', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddCompareColumn($column);
-            
-            //
-            // View column for task3 field
-            //
-            $column = new TextViewColumn('task3', 'task3', 'Task3', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddCompareColumn($column);
-            
-            //
-            // View column for task4 field
-            //
-            $column = new TextViewColumn('task4', 'task4', 'Task4', $this->dataset);
-            $column->SetOrderable(false);
-            $grid->AddCompareColumn($column);
-            
-            //
-            // View column for lastupdate field
-            //
-            $column = new DateTimeViewColumn('lastupdate', 'lastupdate', 'Lastupdate', $this->dataset);
-            $column->SetOrderable(true);
-            $column->SetDateTimeFormat('Y-m-d');
             $grid->AddCompareColumn($column);
             
             //
@@ -1103,6 +693,30 @@
             $column->setNumberAfterDecimal(0);
             $column->setThousandsSeparator(',');
             $column->setDecimalSeparator('');
+            $grid->AddCompareColumn($column);
+            
+            //
+            // View column for day field
+            //
+            $column = new NumberViewColumn('day', 'day', 'Day', $this->dataset);
+            $column->SetOrderable(true);
+            $column->setNumberAfterDecimal(0);
+            $column->setThousandsSeparator(',');
+            $column->setDecimalSeparator('');
+            $grid->AddCompareColumn($column);
+            
+            //
+            // View column for officer field
+            //
+            $column = new TextViewColumn('officer', 'officer', 'Officer', $this->dataset);
+            $column->SetOrderable(true);
+            $grid->AddCompareColumn($column);
+            
+            //
+            // View column for picture field
+            //
+            $column = new DownloadDataColumn('picture', 'picture', 'Picture', $this->dataset);
+            $column->SetOrderable(false);
             $grid->AddCompareColumn($column);
         }
     
@@ -1202,8 +816,26 @@
         }
     
         protected function doRegisterHandlers() {
+            $handler = new DownloadHTTPHandler($this->dataset, 'picture', 'picture_handler', '', '', true);
+            GetApplication()->RegisterHTTPHandler($handler);
             
+            $handler = new DownloadHTTPHandler($this->dataset, 'picture', 'picture_handler', '', '', true);
+            GetApplication()->RegisterHTTPHandler($handler);
             
+            $handler = new DownloadHTTPHandler($this->dataset, 'picture', 'picture_handler', '', '', true);
+            GetApplication()->RegisterHTTPHandler($handler);
+            
+            $handler = new ImageHTTPHandler($this->dataset, 'picture', 'dbo_birthdays_picture_handler_insert', new NullFilter());
+            GetApplication()->RegisterHTTPHandler($handler);
+            
+            $handler = new DownloadHTTPHandler($this->dataset, 'picture', 'picture_handler', '', '', true);
+            GetApplication()->RegisterHTTPHandler($handler);
+            
+            $handler = new ImageHTTPHandler($this->dataset, 'picture', 'dbo_birthdays_picture_handler_edit', new NullFilter());
+            GetApplication()->RegisterHTTPHandler($handler);
+            
+            $handler = new ImageHTTPHandler($this->dataset, 'picture', 'dbo_birthdays_picture_handler_multi_edit', new NullFilter());
+            GetApplication()->RegisterHTTPHandler($handler);
         }
        
         protected function doCustomRenderColumn($fieldName, $fieldData, $rowData, &$customText, &$handled)
@@ -1352,8 +984,8 @@
 
     try
     {
-        $Page = new dbo_payattentionPage("dbo_payattention", "payattention.php", GetCurrentUserPermissionSetForDataSource("dbo.payattention"), 'UTF-8');
-        $Page->SetRecordPermission(GetCurrentUserRecordPermissionsForDataSource("dbo.payattention"));
+        $Page = new dbo_birthdaysPage("dbo_birthdays", "birthdays.php", GetCurrentUserPermissionSetForDataSource("dbo.birthdays"), 'UTF-8');
+        $Page->SetRecordPermission(GetCurrentUserRecordPermissionsForDataSource("dbo.birthdays"));
         GetApplication()->SetMainPage($Page);
         GetApplication()->Run();
     }

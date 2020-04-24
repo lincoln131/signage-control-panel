@@ -1,0 +1,149 @@
+<!doctype:html>
+<html>
+
+<head>
+    <title>Signage Utilities</title>
+    <link rel="icon" href="https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.newdesignfile.com%2Fpostpic%2F2012%2F05%2Fwebsite-icon_337054.png">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        #bg {
+            position: absolute;
+            background-color: #1e1e1e;
+            width: 100%;
+            height: auto;
+            bottom: 0px;
+            top: 0px;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #home {
+            color: white;
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* margin-right: 30px; */
+            font-family: monospace;
+            font-size: 24px;
+        }
+        
+        .left {
+            color: #FF4500 !important;
+        }
+        
+        #home>* {
+            display: inline-block;
+            margin: 0 0rem;
+        }
+        
+        #home>*>div {
+            padding: 10px;
+        }
+        
+        #home>.left>div {
+            text-align: right;
+        }
+        
+        #home>.right>div {
+            text-align: left;
+        }
+        
+        a {
+            display: inline;
+            text-decoration: none;
+            color: white;
+            transition: 0.4s
+        }
+        
+        a:active,
+        a:focus {
+            outline: 0;
+        }
+        
+        a:hover {
+            color: violet;
+        }
+        
+        .slash {
+            display: inline;
+            color: yellow;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="bg">
+        <div id="home">
+            <div class="left">
+                <div>server</div>
+                <div>control panel</div>
+                <div>city traffic</div>
+                <div>wc-schedule</div>
+                <div>birthdays</div>
+                <div>weather</div>
+                <div>⬅️</div>
+
+            </div>
+
+            <div class="right">
+                <div class="in">
+                    <!-- server Section -->
+                    <a href="http://10.11.30.142:3000/#/dashboard">signage server</a>
+                    <div class="slash">// </div>
+                </div>
+
+                <div class="in">
+                    <!-- control panel Section -->
+                    <a href="/signage/controlpanel">home</a>
+                    <div class="slash">// </div>
+                </div>
+
+                <div class="in">
+                    <!-- city traffic Section -->
+                    <a href="/signage/controlpanel/payattention.php">edit</a>
+                    <div class="slash">// </div>
+                    <a href="/signage/payattention.php">view</a>
+                </div>
+
+                <div class="in">
+                    <!-- wc-schedule Section -->
+                    <a href="/signage/controlpanel/wc_schedule.php">edit</a>
+                    <div class="slash">// </div>
+                    <a href="/signage/wc-schedule.php">view</a>
+                </div>
+
+                <div class="in">
+                    <!-- birthdays Section -->
+                    <a href="/signage/controlpanel/birthdays.php">edit</a>
+                    <div class="slash">// </div>
+                    <a href="/signage/birthdays.php">view</a>
+                </div>
+
+                <div class="in">
+                    <!-- weather Section -->
+                    <a href="https://www.meteoblue.com/en/user/account/index">edit</a>
+                    <div class="slash">// </div>
+                    <a href="https://www.meteoblue.com/en/meteotv/b0cf0c">view</a>
+                </div>
+
+                <!-- back Section -->
+                <div class="in">
+                    <!-- back Section -->
+                    <a href="./">back</a>
+                    <div class="slash">//
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

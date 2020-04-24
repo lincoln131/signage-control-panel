@@ -46,10 +46,7 @@
                 '[dbo].[wc_schedule]');
             $this->dataset->addFields(
                 array(
-                    new IntegerField('id', true, true),
-                    new StringField('year', true),
-                    new StringField('month', true),
-                    new StringField('day', true),
+                    new IntegerField('id', true, true, true),
                     new StringField('lt_am', true),
                     new StringField('lt_flex'),
                     new StringField('lt_pm', true),
@@ -58,7 +55,10 @@
                     new StringField('sgt_am_3'),
                     new StringField('sgt_pm_1', true),
                     new StringField('sgt_pm_2'),
-                    new StringField('sgt_pm_3')
+                    new StringField('sgt_pm_3'),
+                    new IntegerField('year', true),
+                    new IntegerField('month', true),
+                    new IntegerField('day', true)
                 )
             );
         }

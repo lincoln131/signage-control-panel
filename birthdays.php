@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html class="birthday">
 <head>
-	<title>PACT</title>
+	<title>Birthdays</title>
 	<meta charset="utf-8">
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="manifest" href="site.webmanifest">
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="http://hpd-php/signage/css/normalize.css">
+	<link rel="stylesheet" href="http://hpd-php/signage/css/main.css">
 </head>
 
 <body>
-	<br><br>
-<header>Pay Attention in City Traffic</header>
+	<br>
+<header>Happy Birthday!</header>
 
 <?php
 		/* Connect to the local server and specify the database to use. */
@@ -28,19 +28,14 @@
 					die( print_r( sqlsrv_errors(), true));
 			}
 		
-		
-		
-
 		/* Set up and execute the query.  */
-		$tsql = "SELECT [location1]
-					,[location2]
-					,[task1]
-					,[task2]
-					,[task3]
-					,[task4]
-					,[lastupdate]
+		$tsql = "SELECT TOP 1 [id]
 					,[year]
 					,[month]
+					,[day]
+					
+					,[officer]
+					,[picture]
 					,CASE
 						WHEN month = 1 THEN 'January'
 						WHEN month = 2 THEN 'February'
@@ -56,10 +51,15 @@
 						WHEN month = 12 THEN 'December' 
 						ELSE 'Error'
 					END AS wordmonth
-
-				FROM [signage].[dbo].[payattention]
-				WHERE YEAR(GETDATE()) = year
-				AND MONTH(GETDATE()) = month";
+					,CASE
+						WHEN RIGHT(day, 1) = 1 then 'st'
+						WHEN RIGHT(day, 1) = 2 then 'nd'
+						WHEN RIGHT(day, 1) = 3 then 'rd'
+						ELSE 'th'
+					END AS fancyday
+				FROM [signage].[dbo].[birthdays]
+				WHERE MONTH(GETDATE()) = month
+				ORDER BY NEWID()";
 
 		$stmt = sqlsrv_query( $conn, $tsql);  
 	
@@ -73,12 +73,11 @@
 		/* Retrieve each row as a PHP object and display the results.*/
 		while( $obj = sqlsrv_fetch_object( $stmt))
 			{
-                echo nl2br ("<section>".$obj->wordmonth." Traffic Enforcement Areas"."\n"."</section>"); /* Note the html tags straight up in the echo */
-                echo nl2br ("<article>".$obj->location1."\n".$obj->location2."\n"."</article>");		 /* They're there for CSS */
-                echo nl2br ("<section>Enforcement Focus - Day & Night</section>");
-				echo nl2br ("<article>".$obj->task1."\n".$obj->task2."\n".$obj->task3."\n".$obj->task4."\n"."<article>");
+				echo nl2br ("<section>".$obj->wordmonth.$obj->day.$obj->fancyday."\n"); 
+				echo '<img class="headshot"src="data:image/jpeg;base64,'.base64_encode( $obj->picture ).'"/>';
+				echo nl2br ("<br>".$obj->officer."</section>"."\n"); 
+				
 			}
-
 		/* Free statement and connection resources. */
 		sqlsrv_free_stmt( $stmt);
 		sqlsrv_close( $conn);
